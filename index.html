@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScriptから現実世界に干渉する7の方法 - Samples</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        header {
+            border-bottom: 2px solid #eee;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+        }
+        h1 {
+            font-size: 1.75rem;
+            margin: 0;
+            color: #000;
+        }
+        .subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #white;
+            margin-bottom: 1rem;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            transition: transform 0.1s, box-shadow 0.1s;
+            background-color: white;
+        }
+        li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        a {
+            display: block;
+            padding: 1.25rem;
+            text-decoration: none;
+            color: inherit;
+        }
+        .chapter-num {
+            font-weight: bold;
+            color: #007bff;
+            display: block;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+        .chapter-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            display: block;
+        }
+        .chapter-desc {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        footer {
+            margin-top: 4rem;
+            font-size: 0.875rem;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>JavaScriptから現実世界に干渉する7の方法</h1>
+        <div class="subtitle">サンプルアプリケーション集</div>
+    </header>
+
+    <main>
+        <ul>
+            <li>
+                <a href="./chapter-1-light-comm/">
+                    <span class="chapter-num">Chapter 1</span>
+                    <span class="chapter-title">光 - 画面光通信 (Morse Code via OOK)</span>
+                    <span class="chapter-desc">画面の明滅を光源として使い、カメラでデコードする光通信プロトタイプ。</span>
+                </a>
+            </li>
+            <li>
+                <a href="./chapter-2-vibration/">
+                    <span class="chapter-num">Chapter 2</span>
+                    <span class="chapter-title">振動 - 触覚フィードバック (Vibration API)</span>
+                    <span class="chapter-desc">Vibration API を使用して、物理的な振動パターンを制御するデモ。</span>
+                </a>
+            </li>
+            <li>
+                <a href="./chapter-3-sound-comm/">
+                    <span class="chapter-num">Chapter 3</span>
+                    <span class="chapter-title">音 - 音響通信 (300bps FSK Modem)</span>
+                    <span class="chapter-desc">Web Audio API と AudioWorklet を使用した、音によるデータ送受信モデム。</span>
+                </a>
+            </li>
+            <li>
+                <a href="./chapter-6-serial/micropython/">
+                    <span class="chapter-num">Chapter 6</span>
+                    <span class="chapter-title">シリアル - MicroPython Web Serial</span>
+                    <span class="chapter-desc">Web Serial API を通じて、ブラウザからマイコン(Raspberry Pi Pico)を直接操作。</span>
+                </a>
+            </li>
+        </ul>
+    </main>
+
+    <footer>
+        &copy; 2025 JavaScriptから現実世界に干渉する7の方法
+    </footer>
+</body>
+</html>
