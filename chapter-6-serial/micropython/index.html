@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroPython Web Serial Test</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .log {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .input-group {
+            margin: 1rem 0;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+        }
+
+        .status {
+            padding: 0.5rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+        }
+
+        .error {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+
+        h2 {
+            margin-top: 2rem;
+        }
+
+        .code-sample {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>MicroPython Web Serial Test</h1>
+
+    <div id="status" class="status">
+        未接続
+    </div>
+
+    <div>
+        <button id="connectBtn">接続</button>
+        <button id="disconnectBtn" disabled>切断</button>
+    </div>
+
+    <h2>コマンド送信</h2>
+    <div class="input-group">
+        <input type="text" id="commandInput" placeholder="MicroPythonコマンドを入力 (例: print('Hello'))" disabled>
+        <button id="sendBtn" disabled>送信</button>
+    </div>
+
+    <div>
+        <button id="blinkBtn" disabled>Lチカ実行</button>
+        <button id="tempBtn" disabled>温度センサー読み取り</button>
+    </div>
+
+    <h2>制御文字送信</h2>
+    <div>
+        <button id="ctrlCBtn" disabled>Ctrl+C (中断)</button>
+        <button id="ctrlDBtn" disabled>Ctrl+D (リブート)</button>
+        <button id="rawReplBtn" disabled>Raw REPLモード</button>
+        <button id="clearBtn">ログクリア</button>
+    </div>
+
+    <h2>受信ログ</h2>
+    <div id="log" class="log"></div>
+
+    <h2>検証項目</h2>
+    <ul>
+        <li>REPLのプロンプト (<code>&gt;&gt;&gt;</code>) が受信できるか</li>
+        <li>コマンド送信後にレスポンスが受信できるか</li>
+        <li>REPLの出力とデータを区別できるか</li>
+        <li>エラーメッセージが正しく表示されるか</li>
+        <li>制御文字（Ctrl+C, Ctrl+D）が機能するか</li>
+        <li>Raw REPLモードでクリーンな出力が得られるか</li>
+    </ul>
+
+    <h2>MicroPython REPLの制御文字</h2>
+    <ul>
+        <li><code>\x03</code> (Ctrl+C): 実行中のプログラムを中断</li>
+        <li><code>\x01</code> (Ctrl+A): Raw REPLモードに入る</li>
+        <li><code>\x02</code> (Ctrl+B): 通常REPLモードに戻る</li>
+        <li><code>\x04</code> (Ctrl+D): ソフトリブート / ペーストモード終了</li>
+        <li><code>\x05</code> (Ctrl+E): ペーストモードに入る</li>
+    </ul>
+
+    <h2>使い方</h2>
+    <ol>
+        <li>Raspberry Pi PicoにMicroPython uf2を書き込む</li>
+        <li>「接続」ボタンをクリックしてシリアルポートを選択</li>
+        <li>REPLプロンプトが表示されることを確認</li>
+        <li>コマンドを送信して動作確認</li>
+    </ol>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

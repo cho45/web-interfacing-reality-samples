@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2: Vibration Test</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 18px;
+            padding: 15px 30px;
+            margin: 10px 0;
+            display: block;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        button:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .pattern-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 5px;
+        }
+        #status {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>振動テスト</h1>
+
+    <div class="info">
+        <p>このページでは、Vibration APIを使ってスマートフォンを振動させることができます。各ボタンをタップして、異なる振動パターンを体験してください。</p>
+    </div>
+
+    <button onclick="vibrate200()">
+        200ms 振動
+        <div class="pattern-description">基本的な短い振動</div>
+    </button>
+
+    <button onclick="vibratePattern()">
+        パターン振動
+        <div class="pattern-description">200ms振動 → 100ms休止 → 200ms振動</div>
+    </button>
+
+    <button onclick="vibrateSOS()">
+        SOS信号
+        <div class="pattern-description">モールス信号のSOSパターン (... --- ...)</div>
+    </button>
+
+    <button onclick="vibrateNotification()">
+        通知パターン
+        <div class="pattern-description">短い2回の振動</div>
+    </button>
+
+    <button onclick="vibrateError()">
+        エラーパターン
+        <div class="pattern-description">短い3回の連続振動</div>
+    </button>
+
+    <div id="status"></div>
+
+    <script>
+        const status = document.getElementById('status');
+
+        function checkSupport() {
+            if (!('vibrate' in navigator)) {
+                status.textContent = '⚠️ このブラウザはVibration APIに対応していません';
+                document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+                return false;
+            }
+            return true;
+        }
+
+        function showStatus(message) {
+            status.textContent = message;
+            setTimeout(() => {
+                status.textContent = '';
+            }, 2000);
+        }
+
+        function vibrate200() {
+            if (!checkSupport()) return;
+            navigator.vibrate(200);
+            showStatus('✓ 200ms振動を実行しました');
+        }
+
+        function vibratePattern() {
+            if (!checkSupport()) return;
+            navigator.vibrate([200, 100, 200]);
+            showStatus('✓ パターン振動を実行しました');
+        }
+
+        function vibrateSOS() {
+            if (!checkSupport()) return;
+            // SOS Prosign: ...---... (連続した単一の符号、文字間隔なし)
+            // ドット=100ms, ダッシュ=300ms, シンボル間=100ms
+            const pattern = [
+                // S (...)
+                100, 100, 100, 100, 100,
+                // シンボル間隔(SとOの間)
+                100,
+                // O (---)
+                300, 100, 300, 100, 300,
+                // シンボル間隔(OとSの間)
+                100,
+                // S (...)
+                100, 100, 100, 100, 100
+            ];
+            navigator.vibrate(pattern);
+            showStatus('✓ SOS信号を送信しました');
+        }
+
+        function vibrateNotification() {
+            if (!checkSupport()) return;
+            navigator.vibrate([50, 50, 50]);
+            showStatus('✓ 通知パターンを実行しました');
+        }
+
+        function vibrateError() {
+            if (!checkSupport()) return;
+            navigator.vibrate([50, 50, 50, 50, 50]);
+            showStatus('✓ エラーパターンを実行しました');
+        }
+
+        // 初期チェック
+        checkSupport();
+    </script>
+</body>
+</html>

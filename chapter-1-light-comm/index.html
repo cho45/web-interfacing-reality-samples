@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: Light Communication (Morse)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Light Communication (Morse)</h1>
+        </header>
+
+        <main>
+            <!-- Sender Section -->
+            <section id="sender-section">
+                <h2>Sender</h2>
+                <div class="controls">
+                    <input type="text" id="input-text" placeholder="HELLO WORLD" value="HELLO WORLD">
+                    <button id="btn-transmit">TRANSMIT</button>
+                </div>
+                <div class="settings">
+                    <label>Speed (Unit Time): <span id="speed-val">100</span>ms</label>
+                    <input type="range" id="speed-range" min="50" max="500" step="10" value="100">
+                </div>
+                <div id="transmitter-display" class="display-off">
+                    <!-- Flashing Area -->
+                    <span id="transmit-status">IDLE</span>
+                </div>
+            </section>
+
+            <!-- Receiver Section -->
+            <section id="receiver-section">
+                <h2>Receiver</h2>
+                <div class="controls">
+                    <button id="btn-camera">Start Camera</button>
+                </div>
+                <div class="settings">
+                    <label>Threshold: <span id="threshold-val">128</span></label>
+                    <input type="range" id="threshold-range" min="0" max="255" value="128">
+                    
+                    <label style="margin-left: 20px;">Speed: <span id="rx-speed-val">100</span>ms</label>
+                    <input type="range" id="rx-speed-range" min="50" max="500" step="10" value="100">
+                </div>
+                
+                <div class="video-container">
+                    <video id="camera-feed" autoplay playsinline muted></video>
+                    <canvas id="processing-canvas"></canvas>
+                    <div class="overlay-info">
+                        Brightness: <span id="brightness-level">0</span>
+                    </div>
+                    <div class="video-overlay">
+                        <div id="decoded-text"></div>
+                        <div id="debug-signal"></div>
+                    </div>
+                </div>
+
+                <div class="graph-container">
+                    <canvas id="signal-graph"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="morse.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

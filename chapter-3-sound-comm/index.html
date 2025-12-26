@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound Communication - FSK Modem</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sound Communication</h1>
+            <p>300bps FSK Modem (Mark: 1650Hz / Space: 1850Hz)</p>
+        </header>
+
+        <main>
+            <section>
+                <div class="controls-row">
+                    <button id="btn-start">Start Audio Context</button>
+                    <span id="audio-status">Status: OFF</span>
+                </div>
+            </section>
+
+            <section>
+                <h2>Transmitter</h2>
+                <div class="controls-row">
+                    <input type="text" id="input-text" value="HELLO WORLD" placeholder="送信するテキストを入力...">
+                    <button id="btn-transmit" disabled>TRANSMIT</button>
+                </div>
+            </section>
+
+            <section>
+                <h2>Receiver</h2>
+                <div class="terminal" id="decoded-text"></div>
+                <div class="visualizer-box">
+                    <canvas id="visualizer"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
