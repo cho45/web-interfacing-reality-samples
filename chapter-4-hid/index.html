@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HID Debugger - JavaScriptから現実世界に干渉する7の方法</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 1.25rem;
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 50rem;
+            margin: 0 auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+        }
+        header {
+            margin: 0 0 1.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+        }
+        header p {
+            margin: 0 0 1rem 0;
+            color: #666;
+        }
+        section {
+            margin: 0 0 1.5rem 0;
+            padding: 1.25rem;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+        }
+        h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1.25rem;
+        }
+        .controls-row {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+            border-radius: 0.25rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.5rem 1rem;
+            font-size: 0.9rem;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #666;
+        }
+        .terminal {
+            background: #000;
+            color: #0f0;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.85rem;
+            min-height: 15rem;
+            max-height: 30rem;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+        .bit-view {
+            display: flex;
+            gap: 2px;
+            margin-top: 0.5rem;
+        }
+        .bit {
+            width: 20px;
+            height: 20px;
+            background: #333;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #fff;
+        }
+        .bit.on {
+            background: #28a745;
+        }
+        .nav {
+            margin-bottom: 1rem;
+        }
+        .nav a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="../index.html">&larr; サンプル一覧に戻る</a>
+        </nav>
+        <header>
+            <h1>HID Report Debugger</h1>
+            <p>WebHID API を使用したデバイス生データの可視化</p>
+        </header>
+
+        <main>
+            <section>
+                <div class="controls-row">
+                    <button id="btn-connect">HID デバイスを選択</button>
+                </div>
+                <div class="info-grid">
+                    <span class="info-label">Device:</span> <span id="dev-name">-</span>
+                    <span class="info-label">VID:</span> <span id="dev-vid">-</span>
+                    <span class="info-label">PID:</span> <span id="dev-pid">-</span>
+                </div>
+            </section>
+
+            <section>
+                <h2>Input Reports</h2>
+                <p style="font-size: 0.8rem; color: #666;">デバイスを操作すると、受信したバイナリデータがリアルタイムに表示されます。</p>
+                <div class="terminal" id="terminal">Waiting for connection...</div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
