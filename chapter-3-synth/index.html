@@ -145,9 +145,18 @@
 
         <main>
             <section>
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
                     <button id="btn-start">AudioContext 開始</button>
                     <span id="audio-status" class="status-badge">Status: OFF</span>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <label for="wave-type" style="font-size: 0.9rem; font-weight: bold;">波形:</label>
+                        <select id="wave-type" style="padding: 0.4rem; border-radius: 0.25rem; border: 1px solid #ccc;">
+                            <option value="sine">サイン波 (Sine)</option>
+                            <option value="square">矩形波 (Square)</option>
+                            <option value="sawtooth">のこぎり波 (Sawtooth)</option>
+                            <option value="triangle">三角波 (Triangle)</option>
+                        </select>
+                    </div>
                 </div>
                 <p>PCキーボードで演奏できます：<br>
                    白鍵: <strong>[A][S][D][F][G][H][J][K]</strong> / 
@@ -183,155 +192,13 @@
             <section style="margin-top: 2rem;">
                 <h2>仕組みの解説</h2>
                 <ul>
-                    <li><strong>ポリフォニック</strong>: 同時に複数のオシレーターを制御することで和音を実現しています。下のボタンを押すと、3つの音が重なって鳴るのを確認できます。</li>
-                    <li><strong>エンベロープ (ADSR)</strong>: <code>linearRampToValueAtTime</code> を使用。Attack（0.01s）と Release（0.1s）を設定し、クリックノイズを防止しています。</li>
+                    <li><strong>ポリフォニック</strong>: 同時に複数のオシレーターを制御することで和音を実現しています。</li>
+                    <li><strong>エンベロープ (ADSR)</strong>: 音の出始めと終わりに滑らかな音量変化（Ramp）を加えることで、クリックノイズを防いでいます。</li>
                 </ul>
             </section>
         </main>
     </div>
 
-    <script>
-        class SimpleSynth {
-            constructor() {
-                this.audioCtx = null;
-                this.oscillators = new Map(); // frequency -> { osc, gain }
-            }
-
-            init() {
-                if (this.audioCtx) return;
-                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                document.getElementById('audio-status').textContent = 'Status: ON';
-                document.getElementById('audio-status').classList.add('on');
-                document.getElementById('btn-start').disabled = true;
-            }
-
-            noteOn(freq) {
-                if (!this.audioCtx) return;
-                if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
-                if (this.oscillators.has(freq)) return;
-
-                const osc = this.audioCtx.createOscillator();
-                const gain = this.audioCtx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.value = freq;
-
-                // Attack
-                gain.gain.setValueAtTime(0, this.audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.3, this.audioCtx.currentTime + 0.01);
-
-                osc.connect(gain);
-                gain.connect(this.audioCtx.destination);
-
-                osc.start();
-                this.oscillators.set(freq, { osc, gain });
-                this.updateKeyVisual(freq, true);
-            }
-
-            noteOff(freq) {
-                const node = this.oscillators.get(freq);
-                if (!node) return;
-
-                const { osc, gain } = node;
-                // Release
-                gain.gain.setValueAtTime(gain.gain.value, this.audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, this.audioCtx.currentTime + 0.1);
-
-                setTimeout(() => {
-                    osc.stop();
-                    osc.disconnect();
-                    this.oscillators.delete(freq);
-                }, 150);
-
-                this.updateKeyVisual(freq, false);
-            }
-
-            updateKeyVisual(freq, isActive) {
-                const keys = document.querySelectorAll('.key');
-                keys.forEach(k => {
-                    if (Math.abs(parseFloat(k.dataset.note) - freq) < 0.1) {
-                        if (isActive) k.classList.add('active');
-                        else k.classList.remove('active');
-                    }
-                });
-            }
-        }
-
-        const synth = new SimpleSynth();
-        const startBtn = document.getElementById('btn-start');
-
-        startBtn.addEventListener('click', () => synth.init());
-
-        // Mapping (C4 to C5 including sharps)
-        const keyMap = {
-            'a': 261.63, // C
-            'w': 277.18, // C#
-            's': 293.66, // D
-            'e': 311.13, // D#
-            'd': 329.63, // E
-            'f': 349.23, // F
-            't': 369.99, // F#
-            'g': 392.00, // G
-            'y': 415.30, // G#
-            'h': 440.00, // A
-            'u': 466.16, // A#
-            'j': 493.88, // B
-            'k': 523.25  // C
-        };
-
-        const chordMap = {
-            'CM': [keyMap.a, keyMap.d, keyMap.g],
-            'Dm': [keyMap.s, keyMap.f, keyMap.h],
-            'Em': [keyMap.d, keyMap.g, keyMap.j],
-            'FM': [keyMap.f, keyMap.h, keyMap.k],
-            'GM': [keyMap.g, keyMap.j, 293.66 * 2], // G, B, D5
-            'Am': [keyMap.h, keyMap.k, 329.63 * 2]  // A, C5, E5
-        };
-
-        window.addEventListener('keydown', (e) => {
-            if (e.repeat) return;
-            const freq = keyMap[e.key.toLowerCase()];
-            if (freq) {
-                synth.init();
-                synth.noteOn(freq);
-            }
-        });
-
-        window.addEventListener('keyup', (e) => {
-            const freq = keyMap[e.key.toLowerCase()];
-            if (freq) synth.noteOff(freq);
-        });
-
-        // Mouse/Touch support for keys
-        document.querySelectorAll('.key').forEach(keyEl => {
-            const freq = parseFloat(keyEl.dataset.note);
-            const down = (e) => { e.preventDefault(); synth.init(); synth.noteOn(freq); };
-            const up = () => synth.noteOff(freq);
-            keyEl.addEventListener('mousedown', down);
-            keyEl.addEventListener('mouseup', up);
-            keyEl.addEventListener('mouseleave', up);
-            keyEl.addEventListener('touchstart', down);
-            keyEl.addEventListener('touchend', up);
-        });
-
-        // Chord buttons support
-        document.querySelectorAll('#chords button').forEach(btn => {
-            const chord = btn.dataset.chord;
-            const freqs = chordMap[chord];
-            const down = (e) => {
-                e.preventDefault();
-                synth.init();
-                freqs.forEach(f => synth.noteOn(freqs.find(x => x === f))); // Fixed direct call
-                freqs.forEach(f => synth.noteOn(f));
-            };
-            const up = () => freqs.forEach(f => synth.noteOff(f));
-            
-            btn.addEventListener('mousedown', down);
-            btn.addEventListener('mouseup', up);
-            btn.addEventListener('mouseleave', up);
-            btn.addEventListener('touchstart', down);
-            btn.addEventListener('touchend', up);
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
