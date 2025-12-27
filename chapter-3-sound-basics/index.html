@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound Basics - JavaScriptから現実世界に干渉する7の方法</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 1.25rem;
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 50rem;
+            margin: 0 auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+        }
+        header {
+            margin: 0 0 1.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+        }
+        header p {
+            margin: 0 0 1rem 0;
+            color: #666;
+        }
+        section {
+            margin: 0 0 1.5rem 0;
+            padding: 1.25rem;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+        }
+        h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1.25rem;
+        }
+        .controls-row {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+            border-radius: 0.25rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.active {
+            background: #28a745;
+            border-color: #28a745;
+        }
+        select {
+            padding: 0.4rem;
+            border-radius: 0.25rem;
+            border: 1px solid #ccc;
+        }
+        .visualizer-container {
+            background: #000;
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+        }
+        canvas {
+            width: 100%;
+            height: 150px;
+            display: block;
+        }
+        .nav {
+            margin-bottom: 1rem;
+        }
+        .nav a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            background: #eee;
+            margin-left: 0.5rem;
+        }
+        .status-badge.on {
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="../index.html">&larr; サンプル一覧に戻る</a>
+        </nav>
+        <header>
+            <h1>Sound Basics</h1>
+            <p>Web Audio API による波形生成とリアルタイム可視化</p>
+        </header>
+
+        <main>
+            <section>
+                <div class="controls-row">
+                    <button id="btn-audio-init">AudioContext 開始</button>
+                    <span id="audio-status" class="status-badge">Status: OFF</span>
+                </div>
+                <p style="font-size: 0.8rem; color: #666;">※ ブラウザの制限により、音を出すにはユーザー操作（クリック）が必要です。</p>
+            </section>
+
+            <section>
+                <h2>Oscillator (発振器)</h2>
+                <div class="controls-row">
+                    <div class="control-group">
+                        <label for="wave-type">波形</label>
+                        <select id="wave-type">
+                            <option value="sine">サイン波 (Sine)</option>
+                            <option value="square">矩形波 (Square)</option>
+                            <option value="sawtooth">のこぎり波 (Sawtooth)</option>
+                            <option value="triangle">三角波 (Triangle)</option>
+                        </select>
+                    </div>
+                    <button id="btn-osc-toggle">音を鳴らす</button>
+                </div>
+                <div class="controls-row">
+                    <div class="control-group">
+                        <label for="freq-slider">周波数: <span id="freq-val">440</span> Hz</label>
+                        <input type="range" id="freq-slider" min="100" max="2000" step="1" value="440">
+                    </div>
+                    <div class="control-group">
+                        <label for="gain-slider">音量: <span id="gain-val">0.3</span></label>
+                        <input type="range" id="gain-slider" min="0" max="1" step="0.01" value="0.3">
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Visualizer (可視化)</h2>
+                <div class="controls-row">
+                    <button id="btn-mic-toggle">マイク入力に切り替え</button>
+                    <span id="mic-status" class="status-badge">Mic: OFF</span>
+                </div>
+                
+                <label>周波数スペクトラム (FFT)</label>
+                <div class="visualizer-container">
+                    <canvas id="canvas-freq"></canvas>
+                </div>
+                
+                <label style="margin-top: 1rem;">波形 (タイムドメイン)</label>
+                <div class="visualizer-container">
+                    <canvas id="canvas-time"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        let audioCtx = null;
+        let oscillator = null;
+        let gainNode = null;
+        let analyser = null;
+        let micSource = null;
+        let isOscRunning = false;
+        let isMicRunning = false;
+
+        const btnAudioInit = document.getElementById('btn-audio-init');
+        const audioStatus = document.getElementById('audio-status');
+        const btnOscToggle = document.getElementById('btn-osc-toggle');
+        const btnMicToggle = document.getElementById('btn-mic-toggle');
+        const micStatus = document.getElementById('mic-status');
+        const waveTypeSelect = document.getElementById('wave-type');
+        const freqSlider = document.getElementById('freq-slider');
+        const gainSlider = document.getElementById('gain-slider');
+        const freqVal = document.getElementById('freq-val');
+        const gainVal = document.getElementById('gain-val');
+
+        const canvasFreq = document.getElementById('canvas-freq');
+        const canvasTime = document.getElementById('canvas-time');
+        const ctxFreq = canvasFreq.getContext('2d');
+        const ctxTime = canvasTime.getContext('2d');
+
+        function initAudio() {
+            if (audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Analyserの設定
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 2048;
+            
+            // GainNodeの設定
+            gainNode = audioCtx.createGain();
+            gainNode.gain.value = parseFloat(gainSlider.value);
+            
+            audioStatus.textContent = 'Status: ON';
+            audioStatus.classList.add('on');
+            btnAudioInit.disabled = true;
+
+            draw();
+        }
+
+        btnAudioInit.addEventListener('click', initAudio);
+
+        // Oscillatorの制御
+        btnOscToggle.addEventListener('click', () => {
+            if (!audioCtx) initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            if (isOscRunning) {
+                oscillator.stop();
+                isOscRunning = false;
+                btnOscToggle.textContent = '音を鳴らす';
+                btnOscToggle.classList.remove('active');
+            } else {
+                oscillator = audioCtx.createOscillator();
+                oscillator.type = waveTypeSelect.value;
+                oscillator.frequency.value = parseFloat(freqSlider.value);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                
+                oscillator.start();
+                isOscRunning = true;
+                btnOscToggle.textContent = '音を止める';
+                btnOscToggle.classList.add('active');
+            }
+        });
+
+        // マイクの制御
+        btnMicToggle.addEventListener('click', async () => {
+            if (!audioCtx) initAudio();
+            
+            if (isMicRunning) {
+                micSource.disconnect();
+                isMicRunning = false;
+                btnMicToggle.classList.remove('active');
+                micStatus.textContent = 'Mic: OFF';
+                micStatus.classList.remove('on');
+            } else {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    micSource = audioCtx.createMediaStreamSource(stream);
+                    micSource.connect(analyser);
+                    isMicRunning = true;
+                    btnMicToggle.classList.add('active');
+                    micStatus.textContent = 'Mic: ON';
+                    micStatus.classList.add('on');
+                } catch (err) {
+                    alert('マイクのアクセスに失敗しました: ' + err);
+                }
+            }
+        });
+
+        // スライダーの反映
+        freqSlider.addEventListener('input', () => {
+            const val = freqSlider.value;
+            freqVal.textContent = val;
+            if (oscillator) oscillator.frequency.value = val;
+        });
+
+        gainSlider.addEventListener('input', () => {
+            const val = gainSlider.value;
+            gainVal.textContent = val;
+            if (gainNode) gainNode.gain.value = val;
+        });
+
+        waveTypeSelect.addEventListener('change', () => {
+            if (oscillator) oscillator.type = waveTypeSelect.value;
+        });
+
+        // 描画ループ
+        function draw() {
+            requestAnimationFrame(draw);
+            if (!analyser) return;
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArrayFreq = new Uint8Array(bufferLength);
+            const dataArrayTime = new Uint8Array(bufferLength);
+
+            // 周波数データの描画
+            analyser.getByteFrequencyData(dataArrayFreq);
+            ctxFreq.fillStyle = 'rgb(0, 0, 0)';
+            ctxFreq.fillRect(0, 0, canvasFreq.width, canvasFreq.height);
+            
+            const barWidth = (canvasFreq.width / bufferLength) * 2.5;
+            let x = 0;
+            for (let i = 0; i < bufferLength; i++) {
+                const barHeight = (dataArrayFreq[i] / 255) * canvasFreq.height;
+                ctxFreq.fillStyle = `hsl(${(i/bufferLength)*360}, 100%, 50%)`;
+                ctxFreq.fillRect(x, canvasFreq.height - barHeight, barWidth, barHeight);
+                x += barWidth + 1;
+            }
+
+            // 波形データの描画
+            analyser.getByteTimeDomainData(dataArrayTime);
+            ctxTime.fillStyle = 'rgb(0, 0, 0)';
+            ctxTime.fillRect(0, 0, canvasTime.width, canvasTime.height);
+            ctxTime.lineWidth = 2;
+            ctxTime.strokeStyle = 'rgb(0, 255, 0)';
+            ctxTime.beginPath();
+
+            const sliceWidth = canvasTime.width / bufferLength;
+            let tx = 0;
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArrayTime[i] / 128.0;
+                const ty = v * canvasTime.height / 2;
+                if (i === 0) ctxTime.moveTo(tx, ty);
+                else ctxTime.lineTo(tx, ty);
+                tx += sliceWidth;
+            }
+            ctxTime.lineTo(canvasTime.width, canvasTime.height / 2);
+            ctxTime.stroke();
+        }
+
+        // キャンバスサイズの初期化
+        function resize() {
+            canvasFreq.width = canvasFreq.clientWidth;
+            canvasFreq.height = canvasFreq.clientHeight;
+            canvasTime.width = canvasTime.clientWidth;
+            canvasTime.height = canvasTime.clientHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+    </script>
+</body>
+</html>

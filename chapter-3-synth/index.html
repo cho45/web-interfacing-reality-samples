@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Synth - JavaScriptから現実世界に干渉する7の方法</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 1.25rem;
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 50rem;
+            margin: 0 auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+        }
+        header {
+            margin: 0 0 1.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+        }
+        header p {
+            margin: 0 0 1rem 0;
+            color: #666;
+        }
+        section {
+            margin: 0 0 1.5rem 0;
+            padding: 1.25rem;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+        }
+        .keyboard {
+            display: flex;
+            justify-content: center;
+            padding: 2rem 0;
+            user-select: none;
+            position: relative;
+        }
+        .key {
+            border: 1px solid #333;
+            border-radius: 0 0 5px 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.1s;
+            box-sizing: border-box;
+        }
+        .key.white {
+            width: 50px;
+            height: 180px;
+            background: white;
+            z-index: 1;
+        }
+        .key.black {
+            width: 32px;
+            height: 110px;
+            background: #333;
+            color: white;
+            z-index: 2;
+            margin-left: -16px;
+            margin-right: -16px;
+        }
+        .key.active {
+            background: #007bff !important;
+            color: white;
+        }
+        .key-hint {
+            color: #999;
+            font-size: 0.6rem;
+            margin-top: 2px;
+        }
+        .key.black .key-hint {
+            color: #ccc;
+        }
+        .key.active .key-hint {
+            color: rgba(255,255,255,0.7);
+        }
+        .chord-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .nav {
+            margin-bottom: 1rem;
+        }
+        .nav a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+            border-radius: 0.25rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            background: #eee;
+        }
+        .status-badge.on {
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="../index.html">&larr; サンプル一覧に戻る</a>
+        </nav>
+        <header>
+            <h1>Simple Synthesizer</h1>
+            <p>Web Audio API によるポリフォニック・シンセサイザー</p>
+        </header>
+
+        <main>
+            <section>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <button id="btn-start">AudioContext 開始</button>
+                    <span id="audio-status" class="status-badge">Status: OFF</span>
+                </div>
+                <p>PCキーボードで演奏できます：<br>
+                   白鍵: <strong>[A][S][D][F][G][H][J][K]</strong> / 
+                   黒鍵: <strong>[W][E] [T][Y][U]</strong>
+                </p>
+            </section>
+
+            <div class="keyboard" id="keyboard">
+                <div class="key white" data-note="261.63" data-key="a">ド<div class="key-hint">A</div></div>
+                <div class="key black" data-note="277.18" data-key="w">ド#<div class="key-hint">W</div></div>
+                <div class="key white" data-note="293.66" data-key="s">レ<div class="key-hint">S</div></div>
+                <div class="key black" data-note="311.13" data-key="e">レ#<div class="key-hint">E</div></div>
+                <div class="key white" data-note="329.63" data-key="d">ミ<div class="key-hint">D</div></div>
+                <div class="key white" data-note="349.23" data-key="f">ファ<div class="key-hint">F</div></div>
+                <div class="key black" data-note="369.99" data-key="t">ファ#<div class="key-hint">T</div></div>
+                <div class="key white" data-note="392.00" data-key="g">ソ<div class="key-hint">G</div></div>
+                <div class="key black" data-note="415.30" data-key="y">ソ#<div class="key-hint">Y</div></div>
+                <div class="key white" data-note="440.00" data-key="h">ラ<div class="key-hint">H</div></div>
+                <div class="key black" data-note="466.16" data-key="u">ラ#<div class="key-hint">U</div></div>
+                <div class="key white" data-note="493.88" data-key="j">シ<div class="key-hint">J</div></div>
+                <div class="key white" data-note="523.25" data-key="k">ド<div class="key-hint">K</div></div>
+            </div>
+
+            <div class="chord-buttons" id="chords">
+                <button data-chord="CM">CM (ドミソ)</button>
+                <button data-chord="Dm">Dm (レファラ)</button>
+                <button data-chord="Em">Em (ミソシ)</button>
+                <button data-chord="FM">FM (ファラド)</button>
+                <button data-chord="GM">GM (ソシレ)</button>
+                <button data-chord="Am">Am (ラドミ)</button>
+            </div>
+
+            <section style="margin-top: 2rem;">
+                <h2>仕組みの解説</h2>
+                <ul>
+                    <li><strong>ポリフォニック</strong>: 同時に複数のオシレーターを制御することで和音を実現しています。下のボタンを押すと、3つの音が重なって鳴るのを確認できます。</li>
+                    <li><strong>エンベロープ (ADSR)</strong>: <code>linearRampToValueAtTime</code> を使用。Attack（0.01s）と Release（0.1s）を設定し、クリックノイズを防止しています。</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        class SimpleSynth {
+            constructor() {
+                this.audioCtx = null;
+                this.oscillators = new Map(); // frequency -> { osc, gain }
+            }
+
+            init() {
+                if (this.audioCtx) return;
+                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                document.getElementById('audio-status').textContent = 'Status: ON';
+                document.getElementById('audio-status').classList.add('on');
+                document.getElementById('btn-start').disabled = true;
+            }
+
+            noteOn(freq) {
+                if (!this.audioCtx) return;
+                if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+                if (this.oscillators.has(freq)) return;
+
+                const osc = this.audioCtx.createOscillator();
+                const gain = this.audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+
+                // Attack
+                gain.gain.setValueAtTime(0, this.audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.3, this.audioCtx.currentTime + 0.01);
+
+                osc.connect(gain);
+                gain.connect(this.audioCtx.destination);
+
+                osc.start();
+                this.oscillators.set(freq, { osc, gain });
+                this.updateKeyVisual(freq, true);
+            }
+
+            noteOff(freq) {
+                const node = this.oscillators.get(freq);
+                if (!node) return;
+
+                const { osc, gain } = node;
+                // Release
+                gain.gain.setValueAtTime(gain.gain.value, this.audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, this.audioCtx.currentTime + 0.1);
+
+                setTimeout(() => {
+                    osc.stop();
+                    osc.disconnect();
+                    this.oscillators.delete(freq);
+                }, 150);
+
+                this.updateKeyVisual(freq, false);
+            }
+
+            updateKeyVisual(freq, isActive) {
+                const keys = document.querySelectorAll('.key');
+                keys.forEach(k => {
+                    if (Math.abs(parseFloat(k.dataset.note) - freq) < 0.1) {
+                        if (isActive) k.classList.add('active');
+                        else k.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        const synth = new SimpleSynth();
+        const startBtn = document.getElementById('btn-start');
+
+        startBtn.addEventListener('click', () => synth.init());
+
+        // Mapping (C4 to C5 including sharps)
+        const keyMap = {
+            'a': 261.63, // C
+            'w': 277.18, // C#
+            's': 293.66, // D
+            'e': 311.13, // D#
+            'd': 329.63, // E
+            'f': 349.23, // F
+            't': 369.99, // F#
+            'g': 392.00, // G
+            'y': 415.30, // G#
+            'h': 440.00, // A
+            'u': 466.16, // A#
+            'j': 493.88, // B
+            'k': 523.25  // C
+        };
+
+        const chordMap = {
+            'CM': [keyMap.a, keyMap.d, keyMap.g],
+            'Dm': [keyMap.s, keyMap.f, keyMap.h],
+            'Em': [keyMap.d, keyMap.g, keyMap.j],
+            'FM': [keyMap.f, keyMap.h, keyMap.k],
+            'GM': [keyMap.g, keyMap.j, 293.66 * 2], // G, B, D5
+            'Am': [keyMap.h, keyMap.k, 329.63 * 2]  // A, C5, E5
+        };
+
+        window.addEventListener('keydown', (e) => {
+            if (e.repeat) return;
+            const freq = keyMap[e.key.toLowerCase()];
+            if (freq) {
+                synth.init();
+                synth.noteOn(freq);
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            const freq = keyMap[e.key.toLowerCase()];
+            if (freq) synth.noteOff(freq);
+        });
+
+        // Mouse/Touch support for keys
+        document.querySelectorAll('.key').forEach(keyEl => {
+            const freq = parseFloat(keyEl.dataset.note);
+            const down = (e) => { e.preventDefault(); synth.init(); synth.noteOn(freq); };
+            const up = () => synth.noteOff(freq);
+            keyEl.addEventListener('mousedown', down);
+            keyEl.addEventListener('mouseup', up);
+            keyEl.addEventListener('mouseleave', up);
+            keyEl.addEventListener('touchstart', down);
+            keyEl.addEventListener('touchend', up);
+        });
+
+        // Chord buttons support
+        document.querySelectorAll('#chords button').forEach(btn => {
+            const chord = btn.dataset.chord;
+            const freqs = chordMap[chord];
+            const down = (e) => {
+                e.preventDefault();
+                synth.init();
+                freqs.forEach(f => synth.noteOn(freqs.find(x => x === f))); // Fixed direct call
+                freqs.forEach(f => synth.noteOn(f));
+            };
+            const up = () => freqs.forEach(f => synth.noteOff(f));
+            
+            btn.addEventListener('mousedown', down);
+            btn.addEventListener('mouseup', up);
+            btn.addEventListener('mouseleave', up);
+            btn.addEventListener('touchstart', down);
+            btn.addEventListener('touchend', up);
+        });
+    </script>
+</body>
+</html>
