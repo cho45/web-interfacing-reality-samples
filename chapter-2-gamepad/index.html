@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gamepad - JavaScriptから現実世界に干渉する7の方法</title>
+    <title>Gamepad - 7 Ways to Interact with the Real World from JavaScript</title>
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -13,36 +14,43 @@
             color: #333;
             line-height: 1.6;
         }
+
         .container {
             max-width: 50rem;
             margin: 0 auto;
             background: white;
             padding: 1.5rem;
             border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
         }
+
         header {
             margin: 0 0 1.5rem 0;
             border-bottom: 1px solid #eee;
         }
+
         h1 {
             margin: 0 0 0.5rem 0;
             font-size: 1.75rem;
         }
+
         header p {
             margin: 0 0 1rem 0;
             color: #666;
         }
+
         section {
             margin: 0 0 1.5rem 0;
             padding: 1.25rem;
             border: 1px solid #ddd;
             border-radius: 0.25rem;
         }
+
         h2 {
             margin: 0 0 1rem 0;
             font-size: 1.25rem;
         }
+
         .gamepad-info {
             background: #f8f9fa;
             padding: 1rem;
@@ -51,12 +59,14 @@
             font-family: monospace;
             font-size: 0.9rem;
         }
+
         .visualizer {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
             margin-bottom: 1rem;
         }
+
         .axis-container {
             width: 100px;
             height: 100px;
@@ -65,6 +75,7 @@
             position: relative;
             border: 1px solid #ccc;
         }
+
         .axis-dot {
             width: 10px;
             height: 10px;
@@ -75,11 +86,13 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
         .buttons-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
             gap: 5px;
         }
+
         .btn-indicator {
             width: 40px;
             height: 40px;
@@ -91,16 +104,19 @@
             justify-content: center;
             font-size: 0.8rem;
         }
+
         .btn-indicator.pressed {
             background: #007bff;
             color: white;
             border-color: #007bff;
         }
+
         .vibration-controls {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 10px;
         }
+
         button {
             padding: 0.75rem;
             cursor: pointer;
@@ -112,77 +128,87 @@
             font-weight: bold;
             transition: background 0.2s;
         }
+
         button:hover {
             background: #0056b3;
             border-color: #0056b3;
         }
+
         button:disabled {
             background: #ccc;
             border-color: #ccc;
             cursor: not-allowed;
         }
+
         .nav {
             margin-bottom: 1rem;
         }
+
         .nav a {
             color: #007bff;
             text-decoration: none;
             font-size: 0.9rem;
         }
+
         #no-gamepad {
             color: #dc3545;
             font-weight: bold;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <nav class="nav">
-            <a href="../index.html">&larr; サンプル一覧に戻る</a>
+            <a href="../index.html">&larr; <span data-i18n="nav_back">Back to Samples</span></a>
         </nav>
         <header>
             <h1>Gamepad API</h1>
-            <p>ゲームコントローラーの状態取得と振動フィードバック</p>
+            <p data-i18n="subtitle">Gamepad state reading and vibration feedback</p>
         </header>
 
         <main>
             <section id="connection-status">
-                <h2>接続状態</h2>
-                <div id="no-gamepad">コントローラーが接続されていません。ボタンを押すと認識されます。</div>
+                <h2 data-i18n="status_title">Connection Status</h2>
+                <div id="no-gamepad" data-i18n="no_gamepad">No controller connected. Press a button to be recognized.
+                </div>
                 <div id="gamepad-display" style="display: none;">
                     <div class="gamepad-info" id="info-text"></div>
                     <div class="visualizer">
                         <div>
-                            <div>左スティック</div>
+                            <div data-i18n="left_stick">Left Stick</div>
                             <div class="axis-container">
                                 <div id="axis-0-1" class="axis-dot"></div>
                             </div>
                         </div>
                         <div>
-                            <div>右スティック</div>
+                            <div data-i18n="right_stick">Right Stick</div>
                             <div class="axis-container">
                                 <div id="axis-2-3" class="axis-dot"></div>
                             </div>
                         </div>
                     </div>
-                    <div>ボタン</div>
+                    <div data-i18n="buttons">Buttons</div>
                     <div class="buttons-container" id="buttons-display"></div>
                 </div>
             </section>
 
             <section>
-                <h2>振動テスト</h2>
-                <p>接続中のコントローラーに振動エフェクトを送信します。</p>
+                <h2 data-i18n="vibration_title">Vibration Test</h2>
+                <p data-i18n="vibration_desc">Send vibration effects to the connected controller.</p>
                 <div class="vibration-controls">
-                    <button onclick="playVibration(200, 0.5, 0.5)">200ms (中強度)</button>
-                    <button onclick="playVibration(500, 1.0, 0.0)">500ms (強モーターのみ)</button>
-                    <button onclick="playVibration(500, 0.0, 1.0)">500ms (弱モーターのみ)</button>
-                    <button onclick="playVibration(1000, 1.0, 1.0)">1s (最大強度)</button>
+                    <button onclick="playVibration(200, 0.5, 0.5)" data-i18n="btn_200ms">200ms (Medium)</button>
+                    <button onclick="playVibration(500, 1.0, 0.0)" data-i18n="btn_strong">500ms (Strong motor
+                        only)</button>
+                    <button onclick="playVibration(500, 0.0, 1.0)" data-i18n="btn_weak">500ms (Weak motor only)</button>
+                    <button onclick="playVibration(1000, 1.0, 1.0)" data-i18n="btn_max">1s (Max intensity)</button>
                 </div>
             </section>
         </main>
     </div>
 
+    <script src="i18n.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

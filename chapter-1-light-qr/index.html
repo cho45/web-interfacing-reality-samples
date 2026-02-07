@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QRコード生成 - JavaScriptから現実世界に干渉する7の方法</title>
+  <title>QR Code Generator</title>
   <style>
     body {
       font-family: sans-serif;
@@ -12,22 +13,27 @@
       padding: 20px;
       line-height: 1.6;
     }
+
     #qrcode {
       margin: 20px 0;
       text-align: center;
     }
+
     canvas {
       border: 1px solid #ddd;
       max-width: 100%;
       height: auto;
     }
-    input, textarea {
+
+    input,
+    textarea {
       width: 100%;
       padding: 8px;
       margin: 5px 0;
       box-sizing: border-box;
       font-size: 1rem;
     }
+
     button {
       padding: 10px 20px;
       font-size: 1rem;
@@ -37,35 +43,41 @@
       border: none;
       border-radius: 4px;
     }
+
     button:hover {
       background-color: #0056b3;
     }
+
     .nav {
       margin-bottom: 2rem;
     }
+
     .nav a {
       color: #007bff;
       text-decoration: none;
     }
   </style>
 </head>
+
 <body>
   <div class="nav">
-    <a href="../index.html">&larr; サンプル一覧に戻る</a>
+    <a href="../index.html">&larr; <span data-i18n="nav_back">Back to Samples</span></a>
   </div>
 
-  <h1>QRコード生成</h1>
-  <p>入力したテキストをQRコード（物理的な光のパターン）として画面に出力します。</p>
+  <h1 data-i18n="title">QR Code Generator</h1>
+  <p data-i18n="description">Display the input text as a QR code (a physical light pattern) on the screen.</p>
 
   <label>
-    テキストを入力:
+    <span data-i18n="label_input">Enter text:</span>
     <textarea id="text" rows="4" placeholder="https://example.com">https://example.com</textarea>
   </label>
-  <button onclick="generateQR()">QRコード生成</button>
+  <button onclick="generateQR()" data-i18n="btn_generate">Generate QR Code</button>
 
   <div id="qrcode"></div>
 
+  <script src="i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

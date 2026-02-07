@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sound Basics - JavaScriptから現実世界に干渉する7の方法</title>
+    <title>Sound Basics - 7 Ways to Interact with the Real World from JavaScript</title>
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -13,36 +14,43 @@
             color: #333;
             line-height: 1.6;
         }
+
         .container {
             max-width: 50rem;
             margin: 0 auto;
             background: white;
             padding: 1.5rem;
             border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
         }
+
         header {
             margin: 0 0 1.5rem 0;
             border-bottom: 1px solid #eee;
         }
+
         h1 {
             margin: 0 0 0.5rem 0;
             font-size: 1.75rem;
         }
+
         header p {
             margin: 0 0 1rem 0;
             color: #666;
         }
+
         section {
             margin: 0 0 1.5rem 0;
             padding: 1.25rem;
             border: 1px solid #ddd;
             border-radius: 0.25rem;
         }
+
         h2 {
             margin: 0 0 1rem 0;
             font-size: 1.25rem;
         }
+
         .controls-row {
             margin-bottom: 1rem;
             display: flex;
@@ -50,19 +58,23 @@
             gap: 1rem;
             flex-wrap: wrap;
         }
+
         .control-group {
             flex: 1;
             min-width: 200px;
         }
+
         label {
             display: block;
             font-size: 0.875rem;
             font-weight: bold;
             margin-bottom: 0.25rem;
         }
+
         input[type="range"] {
             width: 100%;
         }
+
         button {
             padding: 0.5rem 1rem;
             cursor: pointer;
@@ -73,36 +85,44 @@
             font-size: 0.9rem;
             font-weight: bold;
         }
+
         button:hover {
             background: #0056b3;
         }
+
         button.active {
             background: #28a745;
             border-color: #28a745;
         }
+
         select {
             padding: 0.4rem;
             border-radius: 0.25rem;
             border: 1px solid #ccc;
         }
+
         .visualizer-container {
             background: #000;
             border-radius: 0.25rem;
             margin-top: 1rem;
         }
+
         canvas {
             width: 100%;
             height: 150px;
             display: block;
         }
+
         .nav {
             margin-bottom: 1rem;
         }
+
         .nav a {
             color: #007bff;
             text-decoration: none;
             font-size: 0.9rem;
         }
+
         .status-badge {
             font-size: 0.75rem;
             padding: 0.2rem 0.5rem;
@@ -110,70 +130,75 @@
             background: #eee;
             margin-left: 0.5rem;
         }
+
         .status-badge.on {
             background: #d4edda;
             color: #155724;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <nav class="nav">
-            <a href="../index.html">&larr; サンプル一覧に戻る</a>
+            <a href="../index.html">&larr; <span data-i18n="nav_back">Back to Samples</span></a>
         </nav>
         <header>
             <h1>Sound Basics</h1>
-            <p>Web Audio API による波形生成とリアルタイム可視化</p>
+            <p data-i18n="subtitle">Waveform generation and real-time visualization with Web Audio API</p>
         </header>
 
         <main>
             <section>
                 <div class="controls-row">
-                    <button id="btn-audio-init">AudioContext 開始</button>
+                    <button id="btn-audio-init" data-i18n="btn_audio_init">Start AudioContext</button>
                     <span id="audio-status" class="status-badge">Status: OFF</span>
                 </div>
-                <p style="font-size: 0.8rem; color: #666;">※ ブラウザの制限により、音を出すにはユーザー操作（クリック）が必要です。</p>
+                <p style="font-size: 0.8rem; color: #666;" data-i18n="browser_note">Due to browser restrictions, user
+                    interaction (click) is required to play sound.</p>
             </section>
 
             <section>
-                <h2>Oscillator (発振器)</h2>
+                <h2 data-i18n="osc_title">Oscillator</h2>
                 <div class="controls-row">
                     <div class="control-group">
-                        <label for="wave-type">波形</label>
+                        <label for="wave-type" data-i18n="wave_label">Waveform</label>
                         <select id="wave-type">
-                            <option value="sine">サイン波 (Sine)</option>
-                            <option value="square">矩形波 (Square)</option>
-                            <option value="sawtooth">のこぎり波 (Sawtooth)</option>
-                            <option value="triangle">三角波 (Triangle)</option>
+                            <option value="sine" data-i18n="wave_sine">Sine Wave</option>
+                            <option value="square" data-i18n="wave_square">Square Wave</option>
+                            <option value="sawtooth" data-i18n="wave_sawtooth">Sawtooth Wave</option>
+                            <option value="triangle" data-i18n="wave_triangle">Triangle Wave</option>
                         </select>
                     </div>
-                    <button id="btn-osc-toggle">音を鳴らす</button>
+                    <button id="btn-osc-toggle" data-i18n="btn_play">Play Sound</button>
                 </div>
                 <div class="controls-row">
                     <div class="control-group">
-                        <label for="freq-slider">周波数: <span id="freq-val">440</span> Hz</label>
+                        <label for="freq-slider"><span data-i18n="freq_label">Frequency</span>: <span
+                                id="freq-val">440</span> Hz</label>
                         <input type="range" id="freq-slider" min="100" max="2000" step="1" value="440">
                     </div>
                     <div class="control-group">
-                        <label for="gain-slider">音量: <span id="gain-val">0.3</span></label>
+                        <label for="gain-slider"><span data-i18n="gain_label">Volume</span>: <span
+                                id="gain-val">0.3</span></label>
                         <input type="range" id="gain-slider" min="0" max="1" step="0.01" value="0.3">
                     </div>
                 </div>
             </section>
 
             <section>
-                <h2>Visualizer (可視化)</h2>
+                <h2 data-i18n="vis_title">Visualizer</h2>
                 <div class="controls-row">
-                    <button id="btn-mic-toggle">マイク入力に切り替え</button>
+                    <button id="btn-mic-toggle" data-i18n="btn_mic">Switch to Mic Input</button>
                     <span id="mic-status" class="status-badge">Mic: OFF</span>
                 </div>
-                
-                <label>周波数スペクトラム (FFT)</label>
+
+                <label data-i18n="fft_label">Frequency Spectrum (FFT)</label>
                 <div class="visualizer-container">
                     <canvas id="canvas-freq"></canvas>
                 </div>
-                
-                <label style="margin-top: 1rem;">波形 (タイムドメイン)</label>
+
+                <label style="margin-top: 1rem;" data-i18n="time_label">Waveform (Time Domain)</label>
                 <div class="visualizer-container">
                     <canvas id="canvas-time"></canvas>
                 </div>
@@ -181,6 +206,8 @@
         </main>
     </div>
 
+    <script src="i18n.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

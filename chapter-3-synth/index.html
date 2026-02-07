@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Synth - JavaScriptから現実世界に干渉する7の方法</title>
+    <title>Simple Synth - 7 Ways to Interact with the Real World from JavaScript</title>
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -13,32 +14,38 @@
             color: #333;
             line-height: 1.6;
         }
+
         .container {
             max-width: 50rem;
             margin: 0 auto;
             background: white;
             padding: 1.5rem;
             border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
         }
+
         header {
             margin: 0 0 1.5rem 0;
             border-bottom: 1px solid #eee;
         }
+
         h1 {
             margin: 0 0 0.5rem 0;
             font-size: 1.75rem;
         }
+
         header p {
             margin: 0 0 1rem 0;
             color: #666;
         }
+
         section {
             margin: 0 0 1.5rem 0;
             padding: 1.25rem;
             border: 1px solid #ddd;
             border-radius: 0.25rem;
         }
+
         .keyboard {
             display: flex;
             justify-content: center;
@@ -46,6 +53,7 @@
             user-select: none;
             position: relative;
         }
+
         .key {
             border: 1px solid #333;
             border-radius: 0 0 5px 5px;
@@ -60,12 +68,14 @@
             transition: background 0.1s;
             box-sizing: border-box;
         }
+
         .key.white {
             width: 50px;
             height: 180px;
             background: white;
             z-index: 1;
         }
+
         .key.black {
             width: 32px;
             height: 110px;
@@ -75,21 +85,26 @@
             margin-left: -16px;
             margin-right: -16px;
         }
+
         .key.active {
             background: #007bff !important;
             color: white;
         }
+
         .key-hint {
             color: #999;
             font-size: 0.6rem;
             margin-top: 2px;
         }
+
         .key.black .key-hint {
             color: #ccc;
         }
+
         .key.active .key-hint {
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
         }
+
         .chord-buttons {
             display: flex;
             justify-content: center;
@@ -97,14 +112,17 @@
             flex-wrap: wrap;
             margin-top: 1rem;
         }
+
         .nav {
             margin-bottom: 1rem;
         }
+
         .nav a {
             color: #007bff;
             text-decoration: none;
             font-size: 0.9rem;
         }
+
         button {
             padding: 0.5rem 1rem;
             cursor: pointer;
@@ -115,90 +133,126 @@
             font-size: 0.9rem;
             font-weight: bold;
         }
+
         button:hover {
             background: #0056b3;
         }
+
         button:active {
             transform: translateY(1px);
         }
+
         .status-badge {
             font-size: 0.75rem;
             padding: 0.2rem 0.5rem;
             border-radius: 1rem;
             background: #eee;
         }
+
         .status-badge.on {
             background: #d4edda;
             color: #155724;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <nav class="nav">
-            <a href="../index.html">&larr; サンプル一覧に戻る</a>
+            <a href="../index.html">&larr; <span data-i18n="nav_back">Back to Samples</span></a>
         </nav>
         <header>
             <h1>Simple Synthesizer</h1>
-            <p>Web Audio API によるポリフォニック・シンセサイザー</p>
+            <p data-i18n="subtitle">Polyphonic Synthesizer with Web Audio API</p>
         </header>
 
         <main>
             <section>
                 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
-                    <button id="btn-start">AudioContext 開始</button>
+                    <button id="btn-start" data-i18n="btn_start">Start AudioContext</button>
                     <span id="audio-status" class="status-badge">Status: OFF</span>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <label for="wave-type" style="font-size: 0.9rem; font-weight: bold;">波形:</label>
+                        <label for="wave-type" style="font-size: 0.9rem; font-weight: bold;"
+                            data-i18n="wave_label">Waveform:</label>
                         <select id="wave-type" style="padding: 0.4rem; border-radius: 0.25rem; border: 1px solid #ccc;">
-                            <option value="sine">サイン波 (Sine)</option>
-                            <option value="square">矩形波 (Square)</option>
-                            <option value="sawtooth">のこぎり波 (Sawtooth)</option>
-                            <option value="triangle">三角波 (Triangle)</option>
+                            <option value="sine" data-i18n="wave_sine">Sine Wave</option>
+                            <option value="square" data-i18n="wave_square">Square Wave</option>
+                            <option value="sawtooth" data-i18n="wave_sawtooth">Sawtooth Wave</option>
+                            <option value="triangle" data-i18n="wave_triangle">Triangle Wave</option>
                         </select>
                     </div>
                 </div>
-                <p>PCキーボードで演奏できます：<br>
-                   白鍵: <strong>[A][S][D][F][G][H][J][K]</strong> / 
-                   黒鍵: <strong>[W][E] [T][Y][U]</strong>
+                <p><span data-i18n="keyboard_hint">Play with PC keyboard:</span><br>
+                    <span data-i18n="white_keys">White keys</span>: <strong>[A][S][D][F][G][H][J][K]</strong> /
+                    <span data-i18n="black_keys">Black keys</span>: <strong>[W][E] [T][Y][U]</strong>
                 </p>
             </section>
 
             <div class="keyboard" id="keyboard">
-                <div class="key white" data-note="60" data-key="a">ド<div class="key-hint">A</div></div>
-                <div class="key black" data-note="61" data-key="w">ド#<div class="key-hint">W</div></div>
-                <div class="key white" data-note="62" data-key="s">レ<div class="key-hint">S</div></div>
-                <div class="key black" data-note="63" data-key="e">レ#<div class="key-hint">E</div></div>
-                <div class="key white" data-note="64" data-key="d">ミ<div class="key-hint">D</div></div>
-                <div class="key white" data-note="65" data-key="f">ファ<div class="key-hint">F</div></div>
-                <div class="key black" data-note="66" data-key="t">ファ#<div class="key-hint">T</div></div>
-                <div class="key white" data-note="67" data-key="g">ソ<div class="key-hint">G</div></div>
-                <div class="key black" data-note="68" data-key="y">ソ#<div class="key-hint">Y</div></div>
-                <div class="key white" data-note="69" data-key="h">ラ<div class="key-hint">H</div></div>
-                <div class="key black" data-note="70" data-key="u">ラ#<div class="key-hint">U</div></div>
-                <div class="key white" data-note="71" data-key="j">シ<div class="key-hint">J</div></div>
-                <div class="key white" data-note="72" data-key="k">ド<div class="key-hint">K</div></div>
+                <div class="key white" data-note="60" data-key="a"><span data-i18n="note_C">C</span>
+                    <div class="key-hint">A</div>
+                </div>
+                <div class="key black" data-note="61" data-key="w"><span data-i18n="note_Cs">C#</span>
+                    <div class="key-hint">W</div>
+                </div>
+                <div class="key white" data-note="62" data-key="s"><span data-i18n="note_D">D</span>
+                    <div class="key-hint">S</div>
+                </div>
+                <div class="key black" data-note="63" data-key="e"><span data-i18n="note_Ds">D#</span>
+                    <div class="key-hint">E</div>
+                </div>
+                <div class="key white" data-note="64" data-key="d"><span data-i18n="note_E">E</span>
+                    <div class="key-hint">D</div>
+                </div>
+                <div class="key white" data-note="65" data-key="f"><span data-i18n="note_F">F</span>
+                    <div class="key-hint">F</div>
+                </div>
+                <div class="key black" data-note="66" data-key="t"><span data-i18n="note_Fs">F#</span>
+                    <div class="key-hint">T</div>
+                </div>
+                <div class="key white" data-note="67" data-key="g"><span data-i18n="note_G">G</span>
+                    <div class="key-hint">G</div>
+                </div>
+                <div class="key black" data-note="68" data-key="y"><span data-i18n="note_Gs">G#</span>
+                    <div class="key-hint">Y</div>
+                </div>
+                <div class="key white" data-note="69" data-key="h"><span data-i18n="note_A">A</span>
+                    <div class="key-hint">H</div>
+                </div>
+                <div class="key black" data-note="70" data-key="u"><span data-i18n="note_As">A#</span>
+                    <div class="key-hint">U</div>
+                </div>
+                <div class="key white" data-note="71" data-key="j"><span data-i18n="note_B">B</span>
+                    <div class="key-hint">J</div>
+                </div>
+                <div class="key white" data-note="72" data-key="k"><span data-i18n="note_C">C</span>
+                    <div class="key-hint">K</div>
+                </div>
             </div>
 
             <div class="chord-buttons" id="chords">
-                <button data-chord="CM">CM (ドミソ)</button>
-                <button data-chord="Dm">Dm (レファラ)</button>
-                <button data-chord="Em">Em (ミソシ)</button>
-                <button data-chord="FM">FM (ファラド)</button>
-                <button data-chord="GM">GM (ソシレ)</button>
-                <button data-chord="Am">Am (ラドミ)</button>
+                <button data-chord="CM" data-i18n="chord_CM">CM (C-E-G)</button>
+                <button data-chord="Dm" data-i18n="chord_Dm">Dm (D-F-A)</button>
+                <button data-chord="Em" data-i18n="chord_Em">Em (E-G-B)</button>
+                <button data-chord="FM" data-i18n="chord_FM">FM (F-A-C)</button>
+                <button data-chord="GM" data-i18n="chord_GM">GM (G-B-D)</button>
+                <button data-chord="Am" data-i18n="chord_Am">Am (A-C-E)</button>
             </div>
 
             <section style="margin-top: 2rem;">
-                <h2>仕組みの解説</h2>
+                <h2 data-i18n="explanation_title">How It Works</h2>
                 <ul>
-                    <li><strong>ポリフォニック</strong>: 同時に複数のオシレーターを制御することで和音を実現しています。</li>
-                    <li><strong>エンベロープ (ADSR)</strong>: 音の出始めと終わりに滑らかな音量変化（Ramp）を加えることで、クリックノイズを防いでいます。</li>
+                    <li><strong>Polyphonic</strong>: <span data-i18n="polyphonic_desc">Chords are achieved by
+                            controlling multiple oscillators simultaneously.</span></li>
+                    <li><strong>Envelope (ADSR)</strong>: <span data-i18n="envelope_desc">Smooth volume changes (Ramp)
+                            at the start and end of notes prevent click noise.</span></li>
                 </ul>
             </section>
         </main>
     </div>
 
+    <script src="i18n.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

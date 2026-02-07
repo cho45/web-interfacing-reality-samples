@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,67 +79,69 @@
         }
     </style>
 </head>
+
 <body>
     <h1>MicroPython Web Serial Test</h1>
 
-    <div id="status" class="status">
-        未接続
-    </div>
+    <div id="status" class="status" data-i18n="status_disconnected">Disconnected</div>
 
     <div>
-        <button id="connectBtn">接続</button>
-        <button id="disconnectBtn" disabled>切断</button>
+        <button id="connectBtn" data-i18n="btn_connect">Connect</button>
+        <button id="disconnectBtn" disabled data-i18n="btn_disconnect">Disconnect</button>
     </div>
 
-    <h2>コマンド送信</h2>
+    <h2 data-i18n="cmd_title">Send Command</h2>
     <div class="input-group">
-        <input type="text" id="commandInput" placeholder="MicroPythonコマンドを入力 (例: print('Hello'))" disabled>
-        <button id="sendBtn" disabled>送信</button>
+        <input type="text" id="commandInput" data-i18n-placeholder="cmd_placeholder"
+            placeholder="Enter MicroPython command (e.g., print('Hello'))" disabled>
+        <button id="sendBtn" disabled data-i18n="btn_send">Send</button>
     </div>
 
     <div>
-        <button id="blinkBtn" disabled>Lチカ実行</button>
-        <button id="tempBtn" disabled>温度センサー読み取り</button>
+        <button id="blinkBtn" disabled data-i18n="btn_blink">Run LED Blink</button>
+        <button id="tempBtn" disabled data-i18n="btn_temp">Read Temperature</button>
     </div>
 
-    <h2>制御文字送信</h2>
+    <h2 data-i18n="ctrl_title">Send Control Characters</h2>
     <div>
-        <button id="ctrlCBtn" disabled>Ctrl+C (中断)</button>
-        <button id="ctrlDBtn" disabled>Ctrl+D (リブート)</button>
-        <button id="rawReplBtn" disabled>Raw REPLモード</button>
-        <button id="clearBtn">ログクリア</button>
+        <button id="ctrlCBtn" disabled data-i18n="btn_ctrl_c">Ctrl+C (Interrupt)</button>
+        <button id="ctrlDBtn" disabled data-i18n="btn_ctrl_d">Ctrl+D (Reboot)</button>
+        <button id="rawReplBtn" disabled data-i18n="btn_raw_repl">Raw REPL Mode</button>
+        <button id="clearBtn" data-i18n="btn_clear">Clear Log</button>
     </div>
 
-    <h2>受信ログ</h2>
+    <h2 data-i18n="log_title">Receive Log</h2>
     <div id="log" class="log"></div>
 
-    <h2>検証項目</h2>
+    <h2 data-i18n="verify_title">Verification Items</h2>
     <ul>
-        <li>REPLのプロンプト (<code>&gt;&gt;&gt;</code>) が受信できるか</li>
-        <li>コマンド送信後にレスポンスが受信できるか</li>
-        <li>REPLの出力とデータを区別できるか</li>
-        <li>エラーメッセージが正しく表示されるか</li>
-        <li>制御文字（Ctrl+C, Ctrl+D）が機能するか</li>
-        <li>Raw REPLモードでクリーンな出力が得られるか</li>
+        <li data-i18n="verify_1">Can receive REPL prompt (>>>)</li>
+        <li data-i18n="verify_2">Can receive response after sending command</li>
+        <li data-i18n="verify_3">Can distinguish REPL output from data</li>
+        <li data-i18n="verify_4">Error messages display correctly</li>
+        <li data-i18n="verify_5">Control characters (Ctrl+C, Ctrl+D) work</li>
+        <li data-i18n="verify_6">Clean output in Raw REPL mode</li>
     </ul>
 
-    <h2>MicroPython REPLの制御文字</h2>
+    <h2 data-i18n="ctrl_chars_title">MicroPython REPL Control Characters</h2>
     <ul>
-        <li><code>\x03</code> (Ctrl+C): 実行中のプログラムを中断</li>
-        <li><code>\x01</code> (Ctrl+A): Raw REPLモードに入る</li>
-        <li><code>\x02</code> (Ctrl+B): 通常REPLモードに戻る</li>
-        <li><code>\x04</code> (Ctrl+D): ソフトリブート / ペーストモード終了</li>
-        <li><code>\x05</code> (Ctrl+E): ペーストモードに入る</li>
+        <li><code>\x03</code> <span data-i18n="ctrl_1">(Ctrl+C): Interrupt running program</span></li>
+        <li><code>\x01</code> <span data-i18n="ctrl_2">(Ctrl+A): Enter Raw REPL mode</span></li>
+        <li><code>\x02</code> <span data-i18n="ctrl_3">(Ctrl+B): Return to normal REPL mode</span></li>
+        <li><code>\x04</code> <span data-i18n="ctrl_4">(Ctrl+D): Soft reboot / Exit paste mode</span></li>
+        <li><code>\x05</code> <span data-i18n="ctrl_5">(Ctrl+E): Enter paste mode</span></li>
     </ul>
 
-    <h2>使い方</h2>
+    <h2 data-i18n="usage_title">How to Use</h2>
     <ol>
-        <li>Raspberry Pi PicoにMicroPython uf2を書き込む</li>
-        <li>「接続」ボタンをクリックしてシリアルポートを選択</li>
-        <li>REPLプロンプトが表示されることを確認</li>
-        <li>コマンドを送信して動作確認</li>
+        <li data-i18n="usage_1">Write MicroPython uf2 to Raspberry Pi Pico</li>
+        <li data-i18n="usage_2">Click 'Connect' button to select serial port</li>
+        <li data-i18n="usage_3">Confirm REPL prompt appears</li>
+        <li data-i18n="usage_4">Send commands to verify operation</li>
     </ol>
 
+    <script src="i18n.js"></script>
     <script type="module" src="app.js"></script>
 </body>
+
 </html>

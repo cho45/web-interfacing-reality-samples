@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 1: Light Communication (Morse)</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -39,11 +41,11 @@
                 <div class="settings">
                     <label>Threshold: <span id="threshold-val">128</span></label>
                     <input type="range" id="threshold-range" min="0" max="255" value="128">
-                    
+
                     <label style="margin-left: 20px;">Speed: <span id="rx-speed-val">100</span>ms</label>
                     <input type="range" id="rx-speed-range" min="50" max="500" step="10" value="100">
                 </div>
-                
+
                 <div class="video-container">
                     <video id="camera-feed" autoplay playsinline muted></video>
                     <canvas id="processing-canvas"></canvas>
@@ -65,4 +67,5 @@
     <script src="morse.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

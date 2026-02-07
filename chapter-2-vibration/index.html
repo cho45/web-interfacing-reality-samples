@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,14 +14,16 @@
             color: #333;
             line-height: 1.6;
         }
+
         .container {
             max-width: 50rem;
             margin: 0 auto;
             background: white;
             padding: 1.5rem;
             border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
         }
+
         h1 {
             margin: 0 0 1.5rem 0;
             padding-bottom: 0.5rem;
@@ -28,6 +31,7 @@
             font-size: 1.75rem;
             text-align: center;
         }
+
         .info {
             margin: 0 0 1.5rem 0;
             padding: 1.25rem;
@@ -35,11 +39,13 @@
             border-radius: 0.25rem;
             background: #f8f9fa;
         }
+
         .controls {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
+
         button {
             font-size: 18px;
             padding: 15px;
@@ -52,24 +58,29 @@
             text-align: center;
             transition: background 0.2s;
         }
+
         button:hover {
             background: #0056b3;
             border-color: #0056b3;
         }
+
         button:active {
             transform: translateY(1px);
         }
+
         button:disabled {
             background: #ccc;
             border-color: #ccc;
             cursor: not-allowed;
         }
+
         .pattern-description {
             font-size: 12px;
             color: rgba(255, 255, 255, 0.8);
             margin-top: 5px;
             font-weight: normal;
         }
+
         #status {
             text-align: center;
             margin-top: 20px;
@@ -80,44 +91,48 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>振動テスト</h1>
+        <h1 data-i18n="title">Vibration Test</h1>
 
         <div class="info">
-            <p>このページでは、Vibration APIを使ってスマートフォンを振動させることができます。各ボタンをタップして、異なる振動パターンを体験してください。</p>
+            <p data-i18n="description">This page allows you to vibrate your smartphone using the Vibration API. Tap each
+                button to experience different vibration patterns.</p>
         </div>
 
         <div class="controls">
             <button onclick="vibrate200()">
-                200ms 振動
-                <div class="pattern-description">基本的な短い振動</div>
+                <span data-i18n="btn_200ms">200ms Vibration</span>
+                <div class="pattern-description" data-i18n="btn_200ms_desc">Basic short vibration</div>
             </button>
 
             <button onclick="vibratePattern()">
-                パターン振動
-                <div class="pattern-description">200ms振動 → 100ms休止 → 200ms振動</div>
+                <span data-i18n="btn_pattern">Pattern Vibration</span>
+                <div class="pattern-description" data-i18n="btn_pattern_desc">200ms vib → 100ms pause → 200ms vib</div>
             </button>
 
             <button onclick="vibrateSOS()">
-                SOS信号
-                <div class="pattern-description">モールス信号のSOSパターン (... --- ...)</div>
+                <span data-i18n="btn_sos">SOS Signal</span>
+                <div class="pattern-description" data-i18n="btn_sos_desc">Morse code SOS pattern (... --- ...)</div>
             </button>
 
             <button onclick="vibrateNotification()">
-                通知パターン
-                <div class="pattern-description">短い2回の振動</div>
+                <span data-i18n="btn_notification">Notification Pattern</span>
+                <div class="pattern-description" data-i18n="btn_notification_desc">Two short vibrations</div>
             </button>
 
             <button onclick="vibrateModern()">
-                通知風
-                <div class="pattern-description">ブーブブというリズムの振動</div>
+                <span data-i18n="btn_modern">Modern Notification</span>
+                <div class="pattern-description" data-i18n="btn_modern_desc">Rhythmic buzz vibration</div>
             </button>
         </div>
 
         <div id="status"></div>
     </div>
 
+    <script src="i18n.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

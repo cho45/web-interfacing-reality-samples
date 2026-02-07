@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HID Debugger - JavaScriptから現実世界に干渉する7の方法</title>
+    <title>HID Debugger - 7 Ways to Interact with the Real World from JavaScript</title>
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -13,42 +14,50 @@
             color: #333;
             line-height: 1.6;
         }
+
         .container {
             max-width: 50rem;
             margin: 0 auto;
             background: white;
             padding: 1.5rem;
             border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
         }
+
         header {
             margin: 0 0 1.5rem 0;
             border-bottom: 1px solid #eee;
         }
+
         h1 {
             margin: 0 0 0.5rem 0;
             font-size: 1.75rem;
         }
+
         header p {
             margin: 0 0 1rem 0;
             color: #666;
         }
+
         section {
             margin: 0 0 1.5rem 0;
             padding: 1.25rem;
             border: 1px solid #ddd;
             border-radius: 0.25rem;
         }
+
         h2 {
             margin: 0 0 1rem 0;
             font-size: 1.25rem;
         }
+
         .controls-row {
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 1rem;
         }
+
         button {
             padding: 0.5rem 1rem;
             cursor: pointer;
@@ -59,14 +68,17 @@
             font-size: 0.9rem;
             font-weight: bold;
         }
+
         button:hover {
             background: #0056b3;
         }
+
         button:disabled {
             background: #ccc;
             border-color: #ccc;
             cursor: not-allowed;
         }
+
         .info-grid {
             display: grid;
             grid-template-columns: auto 1fr;
@@ -77,10 +89,12 @@
             border-radius: 0.25rem;
             font-family: monospace;
         }
+
         .info-label {
             font-weight: bold;
             color: #666;
         }
+
         .terminal {
             background: #000;
             color: #0f0;
@@ -95,11 +109,13 @@
             word-break: break-all;
             line-height: 1.4;
         }
+
         .bit-view {
             display: flex;
             gap: 2px;
             margin-top: 0.5rem;
         }
+
         .bit {
             width: 20px;
             height: 20px;
@@ -111,12 +127,15 @@
             font-size: 0.7rem;
             color: #fff;
         }
+
         .bit.on {
             background: #28a745;
         }
+
         .nav {
             margin-bottom: 1rem;
         }
+
         .nav a {
             color: #007bff;
             text-decoration: none;
@@ -124,20 +143,21 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <nav class="nav">
-            <a href="../index.html">&larr; サンプル一覧に戻る</a>
+            <a href="../index.html">&larr; <span data-i18n="nav_back">Back to Samples</span></a>
         </nav>
         <header>
             <h1>HID Report Debugger</h1>
-            <p>WebHID API を使用したデバイス生データの可視化</p>
+            <p data-i18n="subtitle">Raw device data visualization with WebHID API</p>
         </header>
 
         <main>
             <section>
                 <div class="controls-row">
-                    <button id="btn-connect">HID デバイスを選択</button>
+                    <button id="btn-connect" data-i18n="btn_connect">Select HID Device</button>
                 </div>
                 <div class="info-grid">
                     <span class="info-label">Device:</span> <span id="dev-name">-</span>
@@ -147,13 +167,16 @@
             </section>
 
             <section>
-                <h2>Input Reports</h2>
-                <p style="font-size: 0.8rem; color: #666;">デバイスを操作すると、受信したバイナリデータがリアルタイムに表示されます。</p>
-                <div class="terminal" id="terminal">Waiting for connection...</div>
+                <h2 data-i18n="input_reports">Input Reports</h2>
+                <p style="font-size: 0.8rem; color: #666;" data-i18n="reports_desc">When you operate the device,
+                    received binary data is displayed in real-time.</p>
+                <div class="terminal" id="terminal" data-i18n="waiting">Waiting for connection...</div>
             </section>
         </main>
     </div>
 
+    <script src="i18n.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

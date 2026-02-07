@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScriptから現実世界に干渉する7の方法 - Samples</title>
+    <title>7 Ways to Interact with the Real World from JavaScript - Samples</title>
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -14,25 +15,30 @@
             color: #333;
             background-color: #f8f9fa;
         }
+
         header {
             border-bottom: 2px solid #eee;
             margin-bottom: 2rem;
             padding-bottom: 1rem;
         }
+
         h1 {
             font-size: 1.75rem;
             margin: 0;
             color: #000;
         }
+
         .subtitle {
             font-size: 1rem;
             color: #666;
             margin-top: 0.5rem;
         }
+
         ul {
             list-style: none;
             padding: 0;
         }
+
         li {
             background: white;
             margin-bottom: 1rem;
@@ -41,16 +47,19 @@
             transition: transform 0.1s, box-shadow 0.1s;
             background-color: white;
         }
+
         li:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
+
         a {
             display: block;
             padding: 1.25rem;
             text-decoration: none;
             color: inherit;
         }
+
         .chapter-num {
             font-weight: bold;
             color: #007bff;
@@ -59,17 +68,20 @@
             text-transform: uppercase;
             margin-bottom: 0.25rem;
         }
+
         .chapter-title {
             font-size: 1.25rem;
             font-weight: bold;
             display: block;
         }
+
         .chapter-desc {
             display: block;
             font-size: 0.9rem;
             color: #666;
             margin-top: 0.5rem;
         }
+
         footer {
             margin-top: 4rem;
             font-size: 0.875rem;
@@ -78,10 +90,11 @@
         }
     </style>
 </head>
+
 <body>
     <header>
-        <h1>JavaScriptから現実世界に干渉する7の方法</h1>
-        <div class="subtitle">サンプルアプリケーション集</div>
+        <h1 data-i18n="main_title">7 Ways to Interact with the Real World from JavaScript</h1>
+        <div class="subtitle" data-i18n="subtitle">Sample Applications</div>
     </header>
 
     <main>
@@ -89,71 +102,89 @@
             <li>
                 <a href="./chapter-1-light-qr/">
                     <span class="chapter-num">Chapter 1</span>
-                    <span class="chapter-title">光 - QRコード生成 (QR Code)</span>
-                    <span class="chapter-desc">入力したテキストをQRコードとして表示する、光の空間パターンによるデータ伝送。</span>
+                    <span class="chapter-title" data-i18n="ch1_qr_title">Light - QR Code Generator</span>
+                    <span class="chapter-desc" data-i18n="ch1_qr_desc">Display input text as a QR code, data
+                        transmission via spatial light patterns.</span>
                 </a>
             </li>
             <li>
                 <a href="./chapter-1-light-comm/">
                     <span class="chapter-num">Chapter 1</span>
-                    <span class="chapter-title">光 - 画面光通信 (Morse Code via OOK)</span>
-                    <span class="chapter-desc">画面の明滅を光源として使い、カメラでデコードする光通信プロトタイプ。</span>
+                    <span class="chapter-title" data-i18n="ch1_comm_title">Light - Screen Light Communication (Morse
+                        Code via OOK)</span>
+                    <span class="chapter-desc" data-i18n="ch1_comm_desc">Light communication prototype using screen
+                        flashing as a light source, decoded by camera.</span>
                 </a>
             </li>
             <li>
                 <a href="./chapter-2-vibration/">
                     <span class="chapter-num">Chapter 2</span>
-                    <span class="chapter-title">振動 - 触覚フィードバック (Vibration API)</span>
-                    <span class="chapter-desc">Vibration API を使用して、物理的な振動パターンを制御するデモ。</span>
+                    <span class="chapter-title" data-i18n="ch2_vib_title">Vibration - Haptic Feedback (Vibration
+                        API)</span>
+                    <span class="chapter-desc" data-i18n="ch2_vib_desc">Demo controlling physical vibration patterns
+                        using the Vibration API.</span>
                 </a>
             </li>
             <li>
                 <a href="./chapter-2-gamepad/">
                     <span class="chapter-num">Chapter 2</span>
-                    <span class="chapter-title">振動 - ゲームコントローラー (Gamepad API)</span>
-                    <span class="chapter-desc">Gamepad API を使用して、コントローラーの状態取得と振動制御を行うデモ。</span>
+                    <span class="chapter-title" data-i18n="ch2_gamepad_title">Vibration - Game Controller (Gamepad
+                        API)</span>
+                    <span class="chapter-desc" data-i18n="ch2_gamepad_desc">Demo for reading controller state and
+                        controlling vibration using the Gamepad API.</span>
                 </a>
             </li>
             <li>
                 <a href="./chapter-3-sound-basics/">
                     <span class="chapter-num">Chapter 3</span>
-                    <span class="chapter-title">音 - 基本波形と可視化 (Web Audio API)</span>
-                    <span class="chapter-desc">オシレーターによる音の生成と、AnalyserNode を使用したリアルタイム可視化。</span>
+                    <span class="chapter-title" data-i18n="ch3_basics_title">Sound - Basic Waveforms and Visualization
+                        (Web Audio API)</span>
+                    <span class="chapter-desc" data-i18n="ch3_basics_desc">Sound generation with oscillators and
+                        real-time visualization using AnalyserNode.</span>
                 </a>
             </li>
             <li>
                 <a href="./chapter-3-synth/">
                     <span class="chapter-num">Chapter 3</span>
-                    <span class="chapter-title">音 - シンセサイザー (Polyphonic Synth)</span>
-                    <span class="chapter-desc">PCキーボードで演奏可能なポリフォニック・シンセサイザーの実装。</span>
+                    <span class="chapter-title" data-i18n="ch3_synth_title">Sound - Synthesizer (Polyphonic
+                        Synth)</span>
+                    <span class="chapter-desc" data-i18n="ch3_synth_desc">Implementation of a polyphonic synthesizer
+                        playable with a PC keyboard.</span>
                 </a>
             </li>
             <li>
                 <a href="./chapter-3-sound-comm/">
                     <span class="chapter-num">Chapter 3</span>
-                    <span class="chapter-title">音 - 音響通信 (300bps FSK Modem)</span>
-                    <span class="chapter-desc">Web Audio API と AudioWorklet を使用した、音によるデータ送受信モデム。</span>
+                    <span class="chapter-title" data-i18n="ch3_comm_title">Sound - Acoustic Communication (300bps FSK
+                        Modem)</span>
+                    <span class="chapter-desc" data-i18n="ch3_comm_desc">Data transmission/reception modem via sound
+                        using Web Audio API and AudioWorklet.</span>
                 </a>
             </li>
             <li>
                 <a href="./chapter-4-hid/">
                     <span class="chapter-num">Chapter 4</span>
-                    <span class="chapter-title">HID - レポートデバッガ (HID Debugger)</span>
-                    <span class="chapter-desc">WebHID API を使用して、デバイスから送られる生のバイナリデータを可視化。</span>
+                    <span class="chapter-title" data-i18n="ch4_hid_title">HID - Report Debugger</span>
+                    <span class="chapter-desc" data-i18n="ch4_hid_desc">Visualize raw binary data sent from devices
+                        using the WebHID API.</span>
                 </a>
             </li>
             <li>
                 <a href="./chapter-6-serial/micropython/">
                     <span class="chapter-num">Chapter 6</span>
-                    <span class="chapter-title">シリアル - MicroPython Web Serial</span>
-                    <span class="chapter-desc">Web Serial API を通じて、ブラウザからマイコン(Raspberry Pi Pico)を直接操作。</span>
+                    <span class="chapter-title" data-i18n="ch6_serial_title">Serial - MicroPython Web Serial</span>
+                    <span class="chapter-desc" data-i18n="ch6_serial_desc">Directly control a microcontroller (Raspberry
+                        Pi Pico) from the browser via Web Serial API.</span>
                 </a>
             </li>
         </ul>
     </main>
 
-    <footer>
-        JavaScriptから現実世界に干渉する7の方法
+    <footer data-i18n="main_title">
+        7 Ways to Interact with the Real World from JavaScript
     </footer>
+
+    <script src="i18n.js"></script>
 </body>
+
 </html>
